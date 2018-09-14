@@ -25,7 +25,7 @@ var bandDef = "Electric Wizard";
 
 
 
-
+//main function to run user input
 function resInput (userInput, getInputSearch) {
 
   switch (userInput) {
@@ -62,6 +62,7 @@ function resInput (userInput, getInputSearch) {
   }
 }
 
+//concert-this case
 function getConcert(artist) {
 
   var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
@@ -98,6 +99,8 @@ function getConcert(artist) {
     }
   });
 }
+
+//spotify-this-song case
 function getSpotify(inputSong) {
 
 
@@ -106,38 +109,42 @@ function getSpotify(inputSong) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
+  var songData = data.tracks.items;
+  for(i=0; i<songData.length; i++){
 
-    console.log(data);
-  });
+    if (i < 4) {
+      j = i + 1;
+      console.log("\nResult " + j);
+      console.log("\nArtist Name");
+      console.log("=============");
+      console.log(songData[i].artists[0].name + "\n");
 
-  var songData = data.tracks.items[0];
+      console.log("Song Name");
+      console.log("=============");
+      console.log(songData[i].name + "\n");
 
-  console.log("Artist Names:");
-  for(i=0; i<songData.artists.length; i++){
-    console.log(songData.artists[i].name);
+      console.log("Preview URL");
+      console.log("=============");
+
+      console.log(songData[i].preview_url + "\n");
+
+      console.log("Album");
+      console.log("=============");
+      console.log(songData[i].album.name + "\n");
+    }
+    else{
+      break;
+    }
   }
-
-  console.log("Song Name:");
-  console.log(songData.name);
-
-  console.log("Preview URL:");
-  console.log(songData.preview_url);
-
-  console.log("Album:");
-  console.log(songData.album.name);
-
-  //show artist name
-  //song name
-  //preview of song link
-  //album song is from
-
+  });
 }
+//movie-this case
 
 function getMovie(inputMovie) {
 
-  var inputMovieFix = inputMovie.replace(/\s/g, '+');
+  var inputMovie = inputMovie.replace(/\s/g, '-');
 
-  var queryUrl = "http://www.omdbapi.com/?t=" + inputMovieFix + "&y=&plot=short&apikey=trilogy";
+  var queryUrl = "http://www.omdbapi.com/?t=" + inputMovie + "&y=&plot=short&apikey=trilogy";
 
 
   request(queryUrl, function(err, res, body) {
@@ -176,16 +183,27 @@ function getMovie(inputMovie) {
         console.log("Actors: " + movieData.Actors);
 
     }else{
-      console.log(error);
+      console.log(err);
     }
 
   });
 
 }
 
+//do-what-it-says case
 function justDoIt() {
+  fs.readFile('random.txt', 'utf8', function(err, data){
+    if (err){
+      return console.log(err);
+    } else {
 
+
+      var justDoItArr = data.split(',');
+
+      resInput(justDoItArr[0], justDoItArr[1]);
+    }
+  });
 }
 
-
+//exec function with input process.argv's
 resInput(getInputAPI, getInputSearch);
