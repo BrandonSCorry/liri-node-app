@@ -1,12 +1,14 @@
 require("dotenv").config();
 
-var keys = require("./keys.js");
-
 
 var request = require('request');
-var fs = require('fs');
 var moment = require('moment');
-var Spotify = require('node-spotify-html');
+var fs = require('fs');
+
+var Spotify = require('node-spotify-api');
+var keys = require("./keys.js");
+var spotify = new Spotify(keys.spotify);
+
 var getInputAPI = process.argv[2];
 
 var getInputSearch = process.argv[3];
@@ -20,7 +22,7 @@ var songDef = "The Sign";
 
 var bandDef = "Electric Wizard";
 
-var spotify = new Spotify(keys.spotify);
+
 
 
 
@@ -69,44 +71,38 @@ function getConcert(artist) {
 
     if (!err && res.statusCode === 200) {
 
-      console.log(JSON.parse(body));
+      // console.log(JSON.parse(body));
 
 
 
         var artistData = JSON.parse(body);
 
-        console.log("Venue Name:");
-        console.log(artistData.venue.name);
+      for (var i=0; artistData.length > i; i++) {
 
+        if (i < 4) {
 
-        for(i=0, j = artistData.venue.length; i<j; i++){
+          console.log("\nVenue Name: " + artistData[i].venue.name);
+          console.log("=============");
 
-          console.log("Venue Name:");
-          console.log(artistData.venue[i].name);
+          console.log("\nVenue Location: " + artistData[i].venue.city + ", " + artistData[i].venue.region);
+          console.log("=============");
 
-          console.log("Venue Location:");
-          console.log(artistData.venue[i].city + ", " + artistData.venue[i].region);
-
-          console.log("Event Date:");
-          console.log(artistData.datetime);
-
-
+          console.log("\nEvent Date: " + moment(artistData[i].datetime).format('MM/DD/YYYY'));
+          console.log("=============");
+          console.log("\n");
         }
-
-
+        else {break;}
+      }
     }else{
-
       console.log(err);
     }
-
   });
-
 }
 function getSpotify(inputSong) {
 
 
 
-  spotify.search({ type: 'track', query: inputSong, limit: 10}, function(err, data) {
+  spotify.search({ type: 'track', query: inputSong, limit: 5}, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
@@ -139,14 +135,45 @@ function getSpotify(inputSong) {
 
 function getMovie(inputMovie) {
 
-  var queryUrl = "http://www.omdbapi.com/?t=" + inputMovie + "&y=&plot=short&apikey=trilogy";
+  var inputMovieFix = inputMovie.replace(/\s/g, '+');
+
+  var queryUrl = "http://www.omdbapi.com/?t=" + inputMovieFix + "&y=&plot=short&apikey=trilogy";
 
 
-  request(queryUrl, function(error, response, body) {
+  request(queryUrl, function(err, res, body) {
 
-    if (!error && response.statusCode === 200) {
+
+
+      if (!err && res.statusCode === 200) {
 
       //console.log(JSON.parse(body));
+
+        var movieData = JSON.parse(body);
+
+
+
+        console.log("Title: " + movieData.Title);
+        console.log("=============");
+
+        console.log("Year: " + movieData.Year);
+        console.log("=============");
+
+        console.log("IMDB: " + movieData.imdbRating);
+        console.log("=============");
+
+        console.log("Rotten Tomatoes: " + movieData.Ratings[1].Value);
+        console.log("=============");
+
+        console.log("Country: " + movieData.Country);
+        console.log("=============");
+
+        console.log("Language: " + movieData.Language);
+        console.log("=============");
+
+        console.log("Plot: " + movieData.Plot);
+        console.log("=============");
+
+        console.log("Actors: " + movieData.Actors);
 
     }else{
       console.log(error);
