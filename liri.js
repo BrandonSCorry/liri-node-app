@@ -58,7 +58,7 @@ function resInput (userInput, getInputSearch) {
       justDoIt();
       break;
     default:
-      console.log("========================================\nYour command is unrecognized, human.\nPlease type one of the following options\n*concert-this 'band name'\n*spotify-this-song 'song name'\n or *movie-this 'movie name'\n========================================\n");
+      console.log("========================================\nYour command is unrecognized, human.\nPlease type one of the following options\nconcert-this 'band name'\nspotify-this-song 'song name'\n or movie-this 'movie name'\n========================================\n");
   }
 }
 
